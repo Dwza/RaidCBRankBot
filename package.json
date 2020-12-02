@@ -1,0 +1,16 @@
+{
+  "name": "sunnysidebot",
+  "version": "1.0.0",
+  "description": "SunnySideBot",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "node src/main.js debug",
+    "start": "node src/main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "colors": "^1.4.0"
+  }
+}

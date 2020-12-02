@@ -1,0 +1,11 @@
+{
+    "errors": {
+        "low": "Sorry, You have the same or a higher rank already!"
+    },
+    "status": {
+        "added": {
+            "rank": "Added Rank",
+            "embed": "Added embed"
+        }
+    }
+}
