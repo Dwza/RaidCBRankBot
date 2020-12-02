@@ -1,0 +1,6 @@
+{
+    "token": "TOKEN HERE",
+    "client_id": "BOT CLIENT ID HERE",
+    "owner_id": "SERVER OWNER ID",
+    "prefix": "!"
+}
