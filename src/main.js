@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const {prefix, token, owner_id} = require('../resources/json/config.json');
 const fs = require('fs');
 const rankJson = './resources/json/rankings.json';
+const rankListDir = './resources/rank_files/';
 const {errors, status} = require('../resources/json/messages.json');
 const positions = {
     first: '🥇',
@@ -27,7 +28,7 @@ client.on('ready', () => {
 
 
 client.on('message', (msg) => {
-    let content = msg.content, channel = msg.channel;
+    let content = msg.content, channel = msg.channel, member = msg.member;
 
     if (msg.author.bot || !content.startsWith(prefix)) return;
 
@@ -103,31 +104,55 @@ client.on('message', (msg) => {
         });
     }
 
-    if (command === 'create' && msg.author.id === owner_id ) {
+    if(command === 'test' && msg.author.id === owner_id) {
+
+        if(!fs.existsSync('./resources/template.json')){
+            channel.send('NEIN yes file exists');
+        }else {
+            channel.send('DOCH there is no file');
+        }
+    }
+
+    //if (command === 'create' && msg.author.id === owner_id && member.hasPermission("ADMINISTRATOR")) {
+    if (command === 'create' && member.hasPermission("ADMINISTRATOR")) {
+
         channel.lastMessage.delete();
-        /** create embed message **/
+
+        // create embed message
         const embed = new Discord.MessageEmbed();
-        /** get embedData **/
+
+        const dataFile = rankListDir + msg.guild.id + '.json';
+
+        if(!fs.existsSync(dataFile)){
+            fs.copyFileSync('./resources/template.json', dataFile);
+        }
+
+        const rankings = readFromFile(dataFile);
+
+
+
+        // get embedData
         let record_embed = rankings.record_embed;
-        /** set embed attributes **/
+        // set embed attributes
         embed.setColor(record_embed.color);
         embed.setDescription(record_embed.description);
-        /** get titles from embedData **/
+        // get titles from embedData
         let titles = record_embed.fields;
-        /** build fields **/
+        // build fields
         for (const [key] of Object.entries(titles)) {
             embed.addField('```' + titles[key] + '```', '-');
         }
 
-        /** send embed to channel **/
+        // send embed to channel
         channel.send(embed).then(sent => {
             rankings.record_embed.id = sent.id;
             rankings.record_embed.channel = channel.id;
-            fs.writeFile(rankJson, JSON.stringify(rankings, null, 4), err => {
+            fs.writeFile(dataFile, JSON.stringify(rankings, null, 4), err => {
                 if (err) throw err;
                 channel.send(status.added.embed).then(m => m.delete({timeout: 5000}));
             });
         });
+        //*/
     }
 
     if (['cb1', 'cb2', 'cb3', 'cb4', 'cb5', 'cb6'].indexOf(command) !== -1) {
@@ -242,7 +267,14 @@ function writeToFile(data, file = rankJson) {
 }
 
 function readFromFile(file = rankJson){
+
+    //file exist
     return JSON.parse(fs.readFileSync(file, "utf8"));
+}
+function readFromFileX(file = rankJson){
+
+    //file exist
+    return JSON.parse(fs.readFileSync(file + '.json', "utf8"));
 }
 
 function getRankChannel() {

@@ -1,7 +1,7 @@
 {
-  "name": "sunnysidebot",
+  "name": "raidcbrankbot",
   "version": "1.0.0",
-  "description": "SunnySideBot",
+  "description": "RaidCBRankBot",
   "main": "src/main.js",
   "scripts": {
     "test": "node src/main.js debug",
@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^12.2.0",
-    "colors": "^1.4.0"
+    "colors": "^1.4.0",
+    "discord.js": "^12.5.1"
   }
 }
