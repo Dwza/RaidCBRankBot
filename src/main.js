@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const {prefix, token, owner_id} = require('../resources/json/config.json');
 const fs = require('fs');
-const rankJson = './resources/json/rankings.json';
 const rankListDir = './resources/rank_files/';
 const {errors, status} = require('../resources/json/messages.json');
 const positions = {
@@ -32,7 +31,7 @@ client.on('message', (msg) => {
 
     if (msg.author.bot || !content.startsWith(prefix)) return;
 
-    let rankings = readFromFile();
+    let rankings = readFromFile(msg.guild.id);
     const args = content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
     const author_id = msg.author.id;
@@ -58,7 +57,7 @@ client.on('message', (msg) => {
     }
 
     if (args.indexOf('-d') !== -1) {
-        removeFromRank(command, dataObject, rankings);
+        removeFromRank(command, dataObject, rankings, msg.guild.id);
         return;
     }else {
         if(typeof score !== "undefined"){
@@ -74,8 +73,8 @@ client.on('message', (msg) => {
 
     if(command === 'update' && msg.author.id === owner_id){
         channel.lastMessage.delete();
-        let rankChannel = getRankChannel();
-        let {record_embed, cb1 = null, cb2 = null, cb3 = null, cb4 = null, cb5 = null, cb6 = null} = require('../resources/json/rankings.json');
+        let rankChannel = getRankChannel(msg.guild.id);
+        let {record_embed, cb1 = null, cb2 = null, cb3 = null, cb4 = null, cb5 = null, cb6 = null} = require(rankListDir + msg.guild.id + '.json');
         rankChannel.messages.fetch(record_embed.id).then(message => {
             let mEmbed = message.embeds[0];
 
@@ -127,7 +126,7 @@ client.on('message', (msg) => {
             fs.copyFileSync('./resources/template.json', dataFile);
         }
 
-        const rankings = readFromFile(dataFile);
+        const rankings = readFromFile(msg.guild.id);
 
 
 
@@ -156,23 +155,24 @@ client.on('message', (msg) => {
     }
 
     if (['cb1', 'cb2', 'cb3', 'cb4', 'cb5', 'cb6'].indexOf(command) !== -1) {
-        addRank(command, dataObject, rankings, options);
+        addRank(command, dataObject, rankings, options, msg.guild.id);
     }
 });
 
 client.login(token);
 
-function removeFromRank(command, dataObject, rankings) {
+function removeFromRank(command, dataObject, rankings, guildId) {
     dataObject.channel.lastMessage.delete();
-    let dataJson = readFromFile();
+
+    let dataJson = readFromFile(guildId);
     if (Object.keys(dataJson).indexOf(command) !== -1) {
         let key = dataJson[command].findIndex(item => {
             return item.id === dataObject.rank.id;
         });
         if (key !== -1) {
             dataJson[command].splice(key,1);
-            writeToFile(dataJson);
-            updateEmbed(command, dataObject, rankings);
+            writeToFile(dataJson, guildId);
+            updateEmbed(command, dataObject, rankings, guildId);
         }
     }
 }
@@ -200,11 +200,11 @@ function mention(id) {
     return '<@' + id + '>';
 }
 
-function addRank(command, dataObject, rankings, options) {
+function addRank(command, dataObject, rankings, options, guildId) {
     let doAdd = true;
     dataObject.channel.lastMessage.delete();
 
-    let dataJson = readFromFile();
+    let dataJson = readFromFile(guildId);
 
     if (Object.keys(dataJson).indexOf(command) !== -1) {
         let found = dataJson[command].find(item => {
@@ -231,18 +231,18 @@ function addRank(command, dataObject, rankings, options) {
         } else {
             dataJson[command].push(dataObject.rank);
         }
-        writeToFile(dataJson);
+        writeToFile(dataJson, guildId);
         dataObject.channel.send(status.added.rank).then(m => m.delete({timeout: 3000}));
     }
-    updateEmbed(command, dataObject, rankings);
+    updateEmbed(command, dataObject, rankings, guildId);
 }
 
-function updateEmbed(command, dataObject, rankings){
-    let rankChannel = getRankChannel();
+function updateEmbed(command, dataObject, rankings, guildId){
+    let rankChannel = getRankChannel(guildId);
     rankChannel.messages.fetch(rankings.record_embed.id).then(message => {
         let e = message.embeds[0];
         let newValue = '';
-        let allRankings = readFromFile()[command];
+        let allRankings = readFromFile(guildId)[command];
         if(allRankings.length > 0){
             allRankings.sort(function(a, b) {
                 return b.score - a.score;
@@ -262,23 +262,19 @@ function updateEmbed(command, dataObject, rankings){
     });
 }
 
-function writeToFile(data, file = rankJson) {
-    fs.writeFileSync(file, JSON.stringify(data, null, 4));
+function writeToFile(data, guildId) {
+    fs.writeFileSync(rankListDir + guildId + '.json', JSON.stringify(data, null, 4));
 }
 
-function readFromFile(file = rankJson){
+function readFromFile(guildId){
 
     //file exist
-    return JSON.parse(fs.readFileSync(file, "utf8"));
-}
-function readFromFileX(file = rankJson){
-
-    //file exist
-    return JSON.parse(fs.readFileSync(file + '.json', "utf8"));
+    return JSON.parse(fs.readFileSync(rankListDir + guildId + '.json', "utf8"));
 }
 
-function getRankChannel() {
-    let file = readFromFile();
+
+function getRankChannel(guildId) {
+    let file = readFromFile(guildId);
     return client.channels.cache.find( ch => ch.id === file.record_embed.channel);
 }
 
