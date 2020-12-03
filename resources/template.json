@@ -1,0 +1,23 @@
+{
+    "record_embed": {
+        "id": "",
+        "channel": "",
+        "color": "#ffd700",
+        "title": "Clan-Boss Records",
+        "description": "**Höchster Schaden den man an einem Clan Boss mit __einem__ Key gemacht hat.**\nUm einen Eintrag hinzuzufügen, entsprechenden Befehl ausführen.\n\nBefehlsbeispiele:\n`!cb1 12.34     ` Fügt schaden zu Clan Boss 1 hinzu.\n`!cb1 -d        ` Löscht den Eintrag\n`!cb1 12.20 -f  ` Überschreibt den Wert wenn er niedriger ist.\n\nAnsonsten können nur höhere Werte gespeichert werden.",
+        "fields": {
+            "easy": "Clan Boss 1 (Easy)",
+            "normal": "Clan Boss 2 (Normal)",
+            "hard": "Clan Boss 3 (Hard)",
+            "brutal": "Clan Boss 4 (Brutal)",
+            "nightmare": "Clan Boss 5 (Nightmare)",
+            "ultra_nightmare": "Clan Boss 6 (Ultra Nightmare)"
+        }
+    },
+    "cb1": [],
+    "cb2": [],
+    "cb3": [],
+    "cb4": [],
+    "cb5": [],
+    "cb6": []
+}
