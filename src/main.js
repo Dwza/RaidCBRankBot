@@ -71,7 +71,7 @@ client.on('message', (msg) => {
         options.force = true
     }
 
-    if(command === 'update' && msg.author.id === owner_id){
+    if(command === 'update' && (msg.author.id === owner_id || member.hasPermission("ADMINISTRATOR"))){
         channel.lastMessage.delete();
         let rankChannel = getRankChannel(msg.guild.id);
         let {record_embed, cb1 = null, cb2 = null, cb3 = null, cb4 = null, cb5 = null, cb6 = null} = require(rankListDir + msg.guild.id + '.json');
@@ -112,8 +112,7 @@ client.on('message', (msg) => {
         }
     }
 
-    //if (command === 'create' && msg.author.id === owner_id && member.hasPermission("ADMINISTRATOR")) {
-    if (command === 'create' && member.hasPermission("ADMINISTRATOR")) {
+    if (command === 'create' && (msg.author.id === owner_id || member.hasPermission("ADMINISTRATOR"))) {
 
         channel.lastMessage.delete();
 
