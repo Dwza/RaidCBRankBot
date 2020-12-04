@@ -1,25 +1,30 @@
 const Discord = require('discord.js');
-const {prefix, token, owner_id} = require('../resources/json/config.json');
+require('dotenv-flow').config();
 const fs = require('fs');
-const rankListDir = './resources/rank_files/';
-const {errors, status} = require('../resources/json/messages.json');
-const positions = {
-    first: '🥇',
-    second: '🥈',
-    third: '🥉',
-    other: '🏅'
-}
+const path = require('path');
 
-const stages = {
-    1: "easy",
-    2: "normal",
-    3: "hard",
-    4: "brutal",
-    5: "nightmare",
-    6: "ultra_nightmare"
-}
+const botRoot = path.join(__dirname, '..');
+const configFile = path.join(botRoot, 'config', 'config.json');
+const messageFile = path.join(botRoot, 'config', 'messages.json');
+const functionPath = path.join(botRoot, 'utils', 'functions.js');
 
-let client = new Discord.Client();
+const rankBot = require(functionPath);
+const config = require(configFile);
+const {errors, status} = require(messageFile);
+const {positions, stages} = require(configFile);
+
+const owner_id = process.env.OWNER;
+const prefix = process.env.PREFIX;
+const rankFileDir = process.env.RANK_FILE_DIR;
+
+const client = new Discord.Client();
+
+client.commands = new Discord.Collection();
+const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
+for(const file of commandFiles){
+    const command = require(`../commands/${file}`);
+    client.commands.set(command.name, command);
+}
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.username}`);
@@ -27,7 +32,9 @@ client.on('ready', () => {
 
 
 client.on('message', (msg) => {
-    let content = msg.content, channel = msg.channel, member = msg.member;
+    let content = msg.content;
+    let channel = msg.channel;
+    let member = msg.member;
 
     if (msg.author.bot || !content.startsWith(prefix)) return;
 
@@ -36,6 +43,7 @@ client.on('message', (msg) => {
     const command = args.shift().toLowerCase();
     const author_id = msg.author.id;
     let score = args[0];
+
     const options = {
         "delete": false,
         "force": false,
@@ -44,7 +52,7 @@ client.on('message', (msg) => {
 
     let rank = {
         'id': author_id,
-        'date': getDate()
+        'date': rankBot.getDate()
     };
 
     let dataObject = {
@@ -74,7 +82,7 @@ client.on('message', (msg) => {
     if(command === 'update' && (msg.author.id === owner_id || member.hasPermission("ADMINISTRATOR"))){
         channel.lastMessage.delete();
         let rankChannel = getRankChannel(msg.guild.id);
-        let {record_embed, cb1 = null, cb2 = null, cb3 = null, cb4 = null, cb5 = null, cb6 = null} = require(rankListDir + msg.guild.id + '.json');
+        let {record_embed, cb1 = null, cb2 = null, cb3 = null, cb4 = null, cb5 = null, cb6 = null} = require(rankFileDir + msg.guild.id + '.json');
         rankChannel.messages.fetch(record_embed.id).then(message => {
             let mEmbed = message.embeds[0];
 
@@ -104,13 +112,13 @@ client.on('message', (msg) => {
     }
 
     if(command === 'test' && msg.author.id === owner_id) {
-
-        if(!fs.existsSync('./resources/template.json')){
-            channel.send('NEIN yes file exists');
-        }else {
-            channel.send('DOCH there is no file');
-        }
+        client.commands.get('test').execute(msg, args, rankBot);
     }
+
+    if(command === 'purge'){
+        client.commands.get('purge').execute(msg, args, messageFile);
+    }
+
 
     if (command === 'create' && (msg.author.id === owner_id || member.hasPermission("ADMINISTRATOR"))) {
 
@@ -119,13 +127,13 @@ client.on('message', (msg) => {
         // create embed message
         const embed = new Discord.MessageEmbed();
 
-        const dataFile = rankListDir + msg.guild.id + '.json';
+        const dataFile = rankFileDir + msg.guild.id + '.json';
 
         if(!fs.existsSync(dataFile)){
             fs.copyFileSync('./resources/template.json', dataFile);
         }
 
-        const rankings = readFromFile(msg.guild.id);
+        const rankings = rankBot.readFromFile(msg.guild.id);
 
 
 
@@ -158,7 +166,7 @@ client.on('message', (msg) => {
     }
 });
 
-client.login(token);
+client.login();
 
 function removeFromRank(command, dataObject, rankings, guildId) {
     dataObject.channel.lastMessage.delete();
@@ -262,25 +270,23 @@ function updateEmbed(command, dataObject, rankings, guildId){
 }
 
 function writeToFile(data, guildId) {
-    fs.writeFileSync(rankListDir + guildId + '.json', JSON.stringify(data, null, 4));
+    fs.writeFileSync(rankFileDir + guildId + '.json', JSON.stringify(data, null, 4));
 }
 
 function readFromFile(guildId){
-
-    //file exist
-    return JSON.parse(fs.readFileSync(rankListDir + guildId + '.json', "utf8"));
+    let filename = createRankFile(guildId);
+    return JSON.parse(fs.readFileSync(filename, "utf8"));
 }
 
+function createRankFile(guildId){
+    let filename = rankFileDir + guildId + '.json';
+    if(!fs.existsSync(filename)){
+        fs.copyFileSync(process.env.RANK_TEMPLATE, filename);
+    }
+    return filename;
+}
 
 function getRankChannel(guildId) {
     let file = readFromFile(guildId);
     return client.channels.cache.find( ch => ch.id === file.record_embed.channel);
-}
-
-function getDate() {
-    let today = new Date();
-    let dd = String(today.getDate()).padStart(2, '0');
-    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    let yyyy = today.getFullYear();
-    return dd + '.' + mm + '.' + yyyy;
 }

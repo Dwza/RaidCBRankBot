@@ -1,0 +1,16 @@
+{
+    "positions": {
+        "first": "🥇",
+        "second": "🥈",
+        "third": "🥉",
+        "other": "🏅"
+    },
+    "stages": [
+        "easy",
+        "normal",
+        "hard",
+        "brutal",
+        "nightmare",
+        "ultra_nightmare"
+    ]
+}

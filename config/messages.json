@@ -1,0 +1,17 @@
+{
+    "errors": {
+        "low": "Sorry, You have the same or a higher rank already!"
+    },
+    "status": {
+        "added": {
+            "rank": "Added Rank",
+            "embed": "Added embed"
+        }
+    },
+    "purge": {
+        "missing": "Sorry, you have to pass the number of messages to delete",
+        "max": "Sorry, you can't delete so many messages. The max amount of messages to delete is: ",
+        "min": "You have to delete at least one message.",
+        "number": "The amount you have passed is not a number."
+    }
+}

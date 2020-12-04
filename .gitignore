@@ -1,5 +1,8 @@
 .idea/
 node_modules/
 .env
+.env.*
+!.env.dist
+
 resources/json/config.json
 resources/rank_files/*.json
