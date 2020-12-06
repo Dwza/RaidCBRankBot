@@ -31,68 +31,27 @@ client.on('ready', () => {
 });
 
 
-client.on('message', (msg) => {
-    let content = msg.content;
-    let channel = msg.channel;
-    let member = msg.member;
+client.on('message', (message) => {
 
-    if (msg.author.bot || !content.startsWith(prefix)) return;
+    if (message.author.bot || !message.content.startsWith(prefix)) return;
 
-   // let rankings = readFromFile(msg.guild.id);
-    const args = content.slice(prefix.length).trim().split(/ +/);
+    const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
-    const author_id = msg.author.id;
-    let score = args[0];
 
-    const options = {
-        "delete": false,
-        "force": false,
-        "help": false
-    };
-
-    let rank = {
-        'id': author_id,
-        'date': rankBot.getDate()
-    };
-
-    let dataObject = {
-        "rank": rank,
-        "channel": channel
-    };
-
-    if (args.indexOf('-h') !== -1) {
-        options.help = true;
+    if(['create', 'update'].indexOf(command) !== -1 && (message.author.id === owner_id || message.member.hasPermission("ADMINISTRATOR"))){
+        client.commands.get(command).execute(message, client);
     }
 
-    if (args.indexOf('-d') !== -1) {
-        //removeFromRank(command, dataObject, rankings, msg.guild.id);
-        //return;
-    }else {
-        if(typeof score !== "undefined"){
-            score = score.replace(/,/g,'.');
-        }
-        rank.score = parseFloat(score).toFixed(2);
-        dataObject.rank = rank;
-    }
-
-    if (args.indexOf('-f') !== -1) {
-        options.force = true
-    }
-
-    if(['create', 'update'].indexOf(command) !== -1 && (msg.author.id === owner_id || member.hasPermission("ADMINISTRATOR"))){
-        client.commands.get(command).execute(msg, client);
-    }
-
-    if(command === 'test' && msg.author.id === owner_id) {
-        client.commands.get('test').execute(msg, args, client);
+    if(command === 'test' && message.author.id === owner_id) {
+        client.commands.get('test').execute(message, args, client);
     }
 
     if(command === 'purge') {
-        client.commands.get('purge').execute(msg, args, messageFile);
+        client.commands.get('purge').execute(message, args, messageFile);
     }
 
     if (['cb1', 'cb2', 'cb3', 'cb4', 'cb5', 'cb6'].indexOf(command) !== -1) {
-        client.commands.get('cb').execute(msg, args, command, client);
+        client.commands.get('cb').execute(message, args, command, client);
     }
 });
 
