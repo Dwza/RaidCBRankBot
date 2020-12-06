@@ -5,8 +5,7 @@
   "main": "src/main.js",
   "scripts": {
     "test": "node src/main.js debug",
-    "startxx": "node src/main.js",
-    "prod": "NODE_ENV=production node src/main.js",
+    "prod": "SET NODE_ENV=production node src/main.js",
     "start": "SET NODE_ENV=development && node src/main.js"
   },
   "author": "",

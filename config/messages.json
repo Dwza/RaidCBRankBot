@@ -6,6 +6,9 @@
         "added": {
             "rank": "Added Rank",
             "embed": "Added embed"
+        },
+        "errors": {
+            "embed": "Embed could not be added. Please contact Bot-Owner."
         }
     },
     "purge": {
@@ -13,5 +16,14 @@
         "max": "Sorry, you can't delete so many messages. The max amount of messages to delete is: ",
         "min": "You have to delete at least one message.",
         "number": "The amount you have passed is not a number."
+    },
+    "cb": {
+        "missing": "No score submitted. Please pass a score to add in the Rank-List.",
+        "low": "Sorry, You have the same or a higher rank already!",
+        "number": "Given Parameter is not a number!",
+        "added": {
+            "rank": "Added Rank",
+            "embed": "Added embed"
+        }
     }
 }
