@@ -1,6 +1,6 @@
 const rankBot = require('../utils/functions.js');
 const path = require('path');
-const {cb} = require(path.join(__dirname, '..','config', 'messages.json'));
+const {cb} = require(path.join(__dirname, '..', 'config', 'messages.json'));
 const deleteMessageDelay = process.env.DELETE_MESSAGE_DELAY;
 
 module.exports = {
@@ -17,10 +17,20 @@ module.exports = {
         message.channel.lastMessage.delete();
         // get guild id
         const guildId = message.guild.id;
+
+        if (options.delete) {
+            const result = rankBot.removeFromRank(command, message, client, args);
+            if (result) {
+                message.channel.send('Your entry has been removed.').then(m => m.delete({timeout: Number(deleteMessageDelay)}));
+            } else {
+                message.channel.send('No entry found.').then(m => m.delete({timeout: Number(deleteMessageDelay)}));
+            }
+            return;
+        }
         // early exit if some data is missing
         if (!args[0]) return message.reply(cb.missing).then(m => m.delete({timeout: Number(deleteMessageDelay)}));
         // replace comma with dot to make it a valid float
-        const param = args[0].replace(/,/g,'.');
+        const param = args[0].replace(/,/g, '.');
         if (isNaN(param)) return message.reply(cb.number).then(m => m.delete({timeout: deleteMessageDelay}));
         // get new score
         let score = parseFloat(param).toFixed(2);

@@ -84,7 +84,7 @@ client.on('message', (msg) => {
     }
 
     if(command === 'test' && msg.author.id === owner_id) {
-        client.commands.get('cb').execute(msg, args, command);
+        client.commands.get('test').execute(msg, args, client);
     }
 
     if(command === 'purge') {

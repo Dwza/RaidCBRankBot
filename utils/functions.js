@@ -35,6 +35,7 @@ module.exports = {
         let file = module.exports.readFromFile(guildId);
         return client.channels.cache.find(ch => ch.id === file.record_embed.channel);
     },
+
     mention: (id) => {
         return '<@' + id + '>';
     },
@@ -43,7 +44,7 @@ module.exports = {
         let line = ' - ';
         switch (i) {
             case 1:
-                line = positions.first + ' ' ;
+                line = positions.first + ' ';
                 break;
             case 2:
                 line = positions.second + ' ';
@@ -57,6 +58,7 @@ module.exports = {
         }
         return line + module.exports.mention(entry.id) + ' ' + entry.score + ' Mio. *(' + entry.date + ')*\n';
     },
+
     updateEmbed: (data, command, guildId, client) => {
 
         let rankChannel = module.exports.getRankChannel(guildId, client);
@@ -87,5 +89,34 @@ module.exports = {
             message.edit(e).then();
 
         });
+    },
+
+    removeFromRank: (command, message, client, args) => {
+
+        const guildId = message.guild.id;
+        let author = message.author.id;
+
+        // delete entry for specific user
+        if (message.author.id === process.env.OWNER || message.member.hasPermission('ADMINISTRATOR')) {
+            const user = message.mentions.users.first();
+            if(user !== undefined){
+                author = user.id;
+            }
+        }
+
+        let rankData = module.exports.readFromFile(guildId);
+
+        if (Object.keys(rankData).indexOf(command) !== -1) {
+            let key = rankData[command].findIndex(item => {
+                return item.id === author;
+            });
+            if (key !== -1) {
+                rankData[command].splice(key, 1);
+                module.exports.writeToFile(guildId, rankData);
+                module.exports.updateEmbed(rankData, command, guildId, client);
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -50,7 +50,6 @@ module.exports = {
                 rankBot.writeToFile(message.guild.id, rankData);
                 message.channel.send(status.added.embed).then(m => m.delete({timeout: Number(deleteMessageDelay)}));
             }catch (e){
-                console.log(e);
                 message.channel.send(status.errors.embed).then(m => m.delete({timeout: Number(deleteMessageDelay)}));
             }
         });
