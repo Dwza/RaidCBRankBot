@@ -5,7 +5,7 @@ const rankFileDir = process.env.RANK_FILE_DIR;
 
 const botRoot = path.join(__dirname, '..');
 const configFile = path.join(botRoot, 'config', 'config.json');
-const {positions, stages} = require(configFile);
+const {positions, stages, record_embed} = require(configFile);
 
 module.exports = {
     configFilePath: configFile,
@@ -59,15 +59,15 @@ module.exports = {
         return line + module.exports.mention(entry.id) + ' ' + entry.score + ' Mio. *(' + entry.date + ')*\n';
     },
 
-    updateEmbed: (data, command, guildId, client) => {
+    updateEmbed: (rankData, command, guildId, client) => {
 
         let rankChannel = module.exports.getRankChannel(guildId, client);
 
-        rankChannel.messages.fetch(data.record_embed.id).then(message => {
+        rankChannel.messages.fetch(rankData.record_embed.id).then(message => {
 
             let e = message.embeds[0];
             let newValue = '';
-            let allRankings = data[command];
+            let allRankings = rankData[command];
 
             if (allRankings.length > 0) {
                 allRankings.sort(function(a, b) {
@@ -75,15 +75,15 @@ module.exports = {
                 });
 
                 for (let i = 0; i < allRankings.length; i++) {
-
                     newValue += module.exports.rankLine(allRankings[i], i + 1);
                 }
             } else {
                 newValue = '-';
             }
 
-            let i = parseInt(command.substr(-1)) + 5;
-            e.fields[i].name = '```' + data.record_embed.fields[stages[i - 6]] + '```';
+            const preset = e.fields.length - 6;
+            let i = parseInt(command.substr(-1)) + (preset -1);
+            e.fields[i].name = '```' + record_embed.fields[stages[i - preset]] + '```';
             e.fields[i].value = newValue;
 
             message.edit(e).then();

@@ -34,7 +34,6 @@ module.exports = {
                 }else {
                     newValue = '-';
                 }
-
                 mEmbed.fields[i+fieldPreset].value = newValue;
             }
             message.edit(mEmbed).then();

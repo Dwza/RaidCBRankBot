@@ -12,5 +12,22 @@
         "brutal",
         "nightmare",
         "ultra_nightmare"
-    ]
+    ],
+    "record_embed": {
+        "color": "#ffd700",
+        "title": "Raid Clan Boss RankBot",
+        "description": "Ein Ranking für den höchster Schaden den man mit **__einem__** :key: am Clan Boss gemacht hat.",
+        "footer": "Dwza's RSL Clan Boss RankingBot - v",
+        "icon": "",
+        "thumbnail": "http://philaurent-raid.de/images/2/20/Clan-Boss.png",
+        "url": "https://rsl-tools.de/",
+        "fields": {
+            "easy": "Clan Boss 1 (Easy)",
+            "normal": "Clan Boss 2 (Normal)",
+            "hard": "Clan Boss 3 (Hard)",
+            "brutal": "Clan Boss 4 (Brutal)",
+            "nightmare": "Clan Boss 5 (Nightmare)",
+            "ultra_nightmare": "Clan Boss 6 (Ultra Nightmare)"
+        }
+    }
 }
