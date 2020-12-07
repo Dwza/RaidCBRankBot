@@ -1,26 +1,18 @@
-const Discord = require('discord.js');
 require('dotenv-flow').config();
+const Discord = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
 const botRoot = path.join(__dirname, '..');
-const configFile = path.join(botRoot, 'config', 'config.json');
 const messageFile = path.join(botRoot, 'config', 'messages.json');
-const functionPath = path.join(botRoot, 'utils', 'functions.js');
-
-const rankBot = require(functionPath);
-const config = require(configFile);
-const {errors, status} = require(messageFile);
-const {positions, stages} = require(configFile);
-
 const owner_id = process.env.OWNER;
 const prefix = process.env.PREFIX;
-const rankFileDir = process.env.RANK_FILE_DIR;
-
 const client = new Discord.Client();
 
 client.commands = new Discord.Collection();
+
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
+
 for(const file of commandFiles){
     const command = require(`../commands/${file}`);
     client.commands.set(command.name, command);
