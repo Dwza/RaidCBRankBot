@@ -2,9 +2,7 @@ const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
 const rankFileDir = process.env.RANK_FILE_DIR;
-
-const botRoot = path.join(__dirname, '..');
-const configFile = path.join(botRoot, 'config', 'config.json');
+const configFile = path.join(__dirname, '..', 'config', 'config.json');
 const {positions, stages, record_embed} = require(configFile);
 
 module.exports = {
