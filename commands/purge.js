@@ -14,7 +14,10 @@ module.exports = {
         if (args[0] < 1) return message.reply(purge.min).then(m => m.delete({timeout: messageTimeout}));
 
         await message.channel.messages.fetch({limit: args[0]}).then(messages => {
-            message.channel.bulkDelete(messages);
+
+            const deletable_messages = messages.filter(msg => !msg.pinned);
+            message.channel.bulkDelete(deletable_messages, true);
+
         });
 
     }
