@@ -4,10 +4,3 @@ node_js:
 
 env:
   - NODE_ENV="development"
-  - NODE_ENV="production"
-  - RANK_TEMPLATE="./resources/templates/template.json"
-  - RANK_FILE_DIR="./resources/rank_files/"
-  - MAX_DELETE_MESSAGES=100
-  - DELETE_MESSAGE_DELAY=3000
-  - VERSION=1.1.2
-  - INVITE_URL="https://discord.com/oauth2/authorize?client_id=783751587189358595&scope=bot&permissions=519232"
