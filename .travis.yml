@@ -11,6 +11,9 @@ env:
     - DELETE_MESSAGE_DELAY=3000
     - VERSION=1.1.2
     - INVITE_URL="https://discord.com/oauth2/authorize?client_id=783751587189358595&scope=bot&permissions=519232"
+    - DISCORD_TOKEN=NzgzNzUxNTg3MTg5MzU4NTk1.X8fTiw._CdQIWMQFTb1FAOJhznilYY-LQQ
+    - OWNER=210421780496515074
+    - PREFIX=!
 
 cache:
   directories:
