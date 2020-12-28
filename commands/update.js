@@ -1,5 +1,4 @@
 const rankBot = require('../utils/functions.js');
-const rankFileDir = process.env.RANK_FILE_DIR;
 const path = require('path');
 const {record_embed, stages} = require(path.join(__dirname, '..', 'config', 'config.json'));
 module.exports = {
@@ -10,7 +9,8 @@ module.exports = {
         message.channel.lastMessage.delete();
         const guildId = message.guild.id;
         let rankChannel = rankBot.getRankChannel(guildId, client);
-        let rankData = require('.' + rankFileDir + guildId + '.json');
+        const rankData = rankBot.readFromFile(guildId);
+
         // get ranking embed
         rankChannel.messages.fetch(rankData.record_embed.id).then(message => {
 
