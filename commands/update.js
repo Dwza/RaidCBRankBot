@@ -37,6 +37,9 @@ module.exports = {
                 }
                 mEmbed.fields[i + fieldPreset].value = newValue;
             }
+
+            mEmbed.setFooter(record_embed.footer + process.env.VERSION);
+
             message.edit(mEmbed).then();
         });
     }
