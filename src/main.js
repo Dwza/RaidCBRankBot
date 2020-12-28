@@ -45,6 +45,10 @@ client.on('message', (message) => {
     if (['cb1', 'cb2', 'cb3', 'cb4', 'cb5', 'cb6'].indexOf(command) !== -1) {
         client.commands.get('cb').execute(message, args, command, client);
     }
+
+    if (command === 'cc') {
+        client.commands.get('cc').execute(message);
+    }
 });
 
 client.login();
