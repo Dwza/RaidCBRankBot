@@ -39,7 +39,7 @@ module.exports = {
             }
 
             mEmbed.setFooter(record_embed.footer + process.env.VERSION);
-
+K
             message.edit(mEmbed).then();
         });
     }
