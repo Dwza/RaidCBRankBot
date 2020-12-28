@@ -38,7 +38,7 @@ client.on('message', (message) => {
         client.commands.get('test').execute(message, args, client);
     }
 
-    if(command === 'purge') {
+    if(command === 'purge' && (message.author.id === owner_id || message.member.hasPermission("ADMINISTRATOR"))) {
         client.commands.get('purge').execute(message, args, messageFile);
     }
 
