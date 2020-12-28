@@ -11,10 +11,20 @@ const client = new Discord.Client();
 
 client.commands = new Discord.Collection();
 
-const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
+const cmdDir = 'commands';
+
+let commandFiles = [];
+const commandDirectories = fs.readdirSync(cmdDir).filter(d => fs.statSync(path.join(cmdDir, d)).isDirectory());
+commandDirectories.forEach(dir => {
+    let filePath = path.join(cmdDir,dir);
+    let files = fs.readdirSync(filePath).filter(f => f.endsWith('.js'));
+    files.forEach(file => {
+        commandFiles.push(path.join(filePath, file));
+    });
+})
 
 for(const file of commandFiles){
-    const command = require(`../commands/${file}`);
+    const command = require(path.join('..', file));
     client.commands.set(command.name, command);
 }
 

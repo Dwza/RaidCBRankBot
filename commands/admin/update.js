@@ -1,7 +1,7 @@
-const rankBot = require('../utils/functions.js');
+const rankBot = require('../../utils/functions.js');
 const rankFileDir = process.env.RANK_FILE_DIR;
 const path = require('path');
-const {record_embed, stages} = require(path.join(__dirname, '..', 'config', 'config.json'));
+const {record_embed, stages} = require(path.join(__dirname, '..', '..', 'config', 'config.json'));
 module.exports = {
     name: 'update',
     description: "Update Ranking Embed",

@@ -1,6 +1,6 @@
-const rankBot = require('../utils/functions.js');
+const rankBot = require('../../utils/functions.js');
 const path = require('path');
-const {cb} = require(path.join(__dirname, '..', 'config', 'messages.json'));
+const {cb} = require(path.join(__dirname, '..', '..', 'config', 'messages.json'));
 const deleteMessageDelay = process.env.DELETE_MESSAGE_DELAY;
 
 module.exports = {

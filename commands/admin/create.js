@@ -1,8 +1,8 @@
 const Discord = require('discord.js');
-const rankBot = require('../utils/functions.js');
+const rankBot = require('../../utils/functions.js');
 const path = require('path');
-const {status} = require(path.join(__dirname, '..','config', 'messages.json'));
-const {record_embed} = require(path.join(__dirname, '..','config', 'config.json'));
+const {status} = require(path.join(__dirname, '..','..','config', 'messages.json'));
+const {record_embed} = require(path.join(__dirname, '..','..','config', 'config.json'));
 const deleteMessageDelay = process.env.DELETE_MESSAGE_DELAY;
 
 module.exports = {
