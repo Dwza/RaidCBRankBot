@@ -3,8 +3,10 @@ const path = require('path');
 const {record_embed, stages} = require(path.join(__dirname, '..', 'config', 'config.json'));
 module.exports = {
     name: 'update',
+    aliases: ['u'],
+    permissions: ['ADMINISTRATOR'],
     description: "Update Ranking Embed",
-    execute(message, client) {
+    execute(client, message, args, command) {
 
         message.channel.lastMessage.delete();
         const guildId = message.guild.id;

@@ -1,7 +1,7 @@
 module.exports = {
     name: 'cc',
     description: "Create a Coaching-Channel",
-    execute(message) {
+    execute(client, message, args, command) {
 
         message.channel.lastMessage.delete();
 

@@ -1,75 +1,58 @@
-const moment = require('moment');
-const fs = require('fs');
-const path = require('path');
-const rankFileDir = process.env.RANK_FILE_DIR;
-const configFile = path.join(__dirname, '..', 'config', 'config.json');
-const messageFile = path.join(__dirname, '..', 'config', 'messages.json');
-const {positions, stages, record_embed} = require(configFile);
+// class is currently unused
+const {Discord, Collection} = require('discord.js');
 
-module.exports = {
-    configFilePath: configFile,
-    msg: require(messageFile),
-    config: require(configFile),
+class RankBot {
 
-    getDate: () => {
+
+    constructor() {
+    }
+
+    //configFilePath: configFile,
+    getDate() {
         moment.locale('de');
         return moment().format('L');
-    },
+    }
 
-    checkPermission: (permissions, message) => {
-        let access = false;
-        if(!Array.isArray(permissions)) permissions = [permissions];
-        if(permissions.length === 0) return true;
-        permissions.forEach(permission => {
-            if(permission === "ADMINISTRATOR" && !access){
-                access = message.member.hasPermission(permission);
-            }
-            if(permission === "OWNER" && !access) {
-                access = message.author.id === process.env.OWNER;
-            }
-        });
-        return access;
-    },
+    checkPermission(permissions) {
 
-    accessDenied(message, delay = 5000){
-        return message.reply(this.msg.permission.denied).then(m => m.delete({timeout: delay}));
-    },
+        return false;
+    }
 
-    getArgArray: (message) => {
+    getArgArray(message) {
         return message.content.slice(process.env.PREFIX.length).trim().split(/ +/);
-    },
+    }
 
-    deleteLastMessage: (message) => {
+    deleteLastMessage(message) {
         message.channel.lastMessage.delete();
-    },
+    }
 
-    writeToFile: (guildId, data) => {
+    writeToFile(guildId, data) {
         fs.writeFileSync(rankFileDir + guildId + '.json', JSON.stringify(data, null, 4));
-    },
+    }
 
-    readFromFile: (guildId) => {
+    readFromFile(guildId) {
         let filename = module.exports.createRankFile(guildId);
         return JSON.parse(fs.readFileSync(filename, "utf8"));
-    },
+    }
 
-    createRankFile: (guildId) => {
+    createRankFile(guildId) {
         let filename = rankFileDir + guildId + '.json';
         if (!fs.existsSync(filename)) {
             fs.copyFileSync(process.env.RANK_TEMPLATE, filename);
         }
         return filename;
-    },
+    }
 
-    getRankChannel: (guildId, client) => {
+    getRankChannel(guildId, client) {
         let file = module.exports.readFromFile(guildId);
         return client.channels.cache.find(ch => ch.id === file.record_embed.channel);
-    },
+    }
 
-    mention: (id) => {
+    mention(id) {
         return '<@' + id + '>';
-    },
+    }
 
-    rankLine: (entry, i) => {
+    rankLine(entry, i) {
         let line = ' - ';
         switch (i) {
             case 1:
@@ -86,9 +69,9 @@ module.exports = {
                 break;
         }
         return line + module.exports.mention(entry.id) + ' ' + entry.score + ' Mio. *(' + entry.date + ')*\n';
-    },
+    }
 
-    updateEmbed: (rankData, command, guildId, client) => {
+    updateEmbed(rankData, command, guildId, client) {
 
         let rankChannel = module.exports.getRankChannel(guildId, client);
 
@@ -111,16 +94,16 @@ module.exports = {
             }
 
             const preset = e.fields.length - 6;
-            let i = parseInt(command.substr(-1)) + (preset -1);
+            let i = parseInt(command.substr(-1)) + (preset - 1);
             e.fields[i].name = '```' + record_embed.fields[stages[i - preset]] + '```';
             e.fields[i].value = newValue;
 
             message.edit(e).then();
 
         });
-    },
+    }
 
-    removeFromRank: (command, message, client, args) => {
+    removeFromRank(command, message, client, args) {
 
         const guildId = message.guild.id;
         let author = message.author.id;
@@ -128,7 +111,7 @@ module.exports = {
         // delete entry for specific user
         if (message.author.id === process.env.OWNER || message.member.hasPermission('ADMINISTRATOR')) {
             const user = message.mentions.users.first();
-            if(user !== undefined){
+            if (user !== undefined) {
                 author = user.id;
             }
         }
@@ -149,4 +132,3 @@ module.exports = {
         return false;
     }
 }
-

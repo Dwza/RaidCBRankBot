@@ -22,5 +22,8 @@
             "rank": "Added Rank",
             "embed": "Added embed"
         }
+    },
+    "permission": {
+        "denied": "du hast keine Rechte diesen Befehl zu verwenden."
     }
 }

@@ -1,10 +1,12 @@
 
 module.exports = {
     name: 'purge',
+    aliases: ['prune'],
+    permissions: ['ADMINISTRATOR'],
     description: "Purge messages!",
-    async execute(message, args, messageFile) {
+    async execute(client, message, args, command) {
         await message.channel.lastMessage.delete();
-        const {purge} = require(messageFile);
+        const {purge} = require('../config/messages.json');
         const maxMessages = process.env.MAX_DELETE_MESSAGES;
         const messageTimeout = 3000;
 

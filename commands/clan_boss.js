@@ -1,12 +1,16 @@
-const rankBot = require('../utils/functions.js');
+const bot = require('../utils/functions.js');
 const path = require('path');
 const {cb} = require(path.join(__dirname, '..', 'config', 'messages.json'));
 const deleteMessageDelay = process.env.DELETE_MESSAGE_DELAY;
 
 module.exports = {
     name: 'cb',
+    aliases: [],
+    permissions: [],
     description: "Adds entry to Leaderboard",
-    execute(message, args, command, client) {
+    execute(client, message, args, command) {
+
+        bot.deleteLastMessage();
 
         const options = {
             "delete": args.indexOf('-d') !== -1,
@@ -14,12 +18,11 @@ module.exports = {
             "help": args.indexOf('-h') !== -1
         };
 
-        message.channel.lastMessage.delete();
         // get guild id
         const guildId = message.guild.id;
 
         if (options.delete) {
-            const result = rankBot.removeFromRank(command, message, client, args);
+            const result = bot.removeFromRank(command, message, client, args);
             if (result) {
                 message.channel.send('Your entry has been removed.').then(m => m.delete({timeout: Number(deleteMessageDelay)}));
             } else {
@@ -35,7 +38,7 @@ module.exports = {
         // get new score
         let score = parseFloat(param).toFixed(2);
         // get rank data
-        let rankData = rankBot.readFromFile(guildId);
+        let rankData = bot.readFromFile(guildId);
         // check if cb entry exists
         if (Object.keys(rankData).indexOf(command) !== -1) {
             // check if author has an entry
@@ -59,18 +62,18 @@ module.exports = {
         });
         if (key !== -1) {
             rankData[command][key].score = score;
-            rankData[command][key].date = rankBot.getDate();
+            rankData[command][key].date = bot.getDate();
 
         } else {
             rankData[command].push({
                 "id": message.author.id,
-                "date": rankBot.getDate(),
+                "date": bot.getDate(),
                 "score": score
             });
         }
-        rankBot.writeToFile(guildId, rankData);
+        bot.writeToFile(guildId, rankData);
         message.channel.send(cb.added.rank).then(m => m.delete({timeout: Number(deleteMessageDelay)}));
 
-        rankBot.updateEmbed(rankData, command, guildId, client);
+        bot.updateEmbed(rankData, command, guildId, client);
     }
 }
