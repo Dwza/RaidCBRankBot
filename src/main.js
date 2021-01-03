@@ -30,6 +30,7 @@ client.on('message', (message) => {
     const command = args.shift().toLowerCase();
     const c = client.commands.get(command) || client.commands.find( cmd => typeof cmd.aliases !== 'undefined' && cmd.aliases.indexOf(command) !== -1)
 
+    if(!c) return;
     if(!bot.checkPermission(c.permissions, message)) return bot.accessDenied(message);
 
     c.execute(client, message, args, command);
