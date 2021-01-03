@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 
 const botRoot = path.join(__dirname, '..');
-const messageFile = path.join(botRoot, 'config', 'messages.json');
-const owner_id = process.env.OWNER;
+const utils = path.join(botRoot, 'utils', 'functions.js');
+const bot = require(utils);
 const prefix = process.env.PREFIX;
 const client = new Discord.Client();
 
@@ -26,29 +26,15 @@ client.on('ready', () => {
 client.on('message', (message) => {
 
     if (message.author.bot || !message.content.startsWith(prefix)) return;
-
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
+    const c = client.commands.get(command) || client.commands.find( cmd => typeof cmd.aliases !== 'undefined' && cmd.aliases.indexOf(command) !== -1)
 
-    if(['create', 'update'].indexOf(command) !== -1 && (message.author.id === owner_id || message.member.hasPermission("ADMINISTRATOR"))){
-        client.commands.get(command).execute(message, client);
-    }
+    if(!c) return;
+    if(!bot.checkPermission(c.permissions, message)) return bot.accessDenied(message);
 
-    if(command === 'test' && message.author.id === owner_id) {
-        client.commands.get('test').execute(message, args, client);
-    }
+    c.execute(client, message, args, command);
 
-    if(command === 'purge' && (message.author.id === owner_id || message.member.hasPermission("ADMINISTRATOR"))) {
-        client.commands.get('purge').execute(message, args, messageFile);
-    }
-
-    if (['cb1', 'cb2', 'cb3', 'cb4', 'cb5', 'cb6'].indexOf(command) !== -1) {
-        client.commands.get('cb').execute(message, args, command, client);
-    }
-
-    if (command === 'cc') {
-        client.commands.get('cc').execute(message);
-    }
 });
 
 client.login();
