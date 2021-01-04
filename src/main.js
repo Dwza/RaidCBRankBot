@@ -35,7 +35,6 @@ client.on('message', (message) => {
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
     const c = client.commands.get(command) || client.aliases.get(command)
-
     if (c) {
         if (!bot.checkPermission(c.permissions, message)) return bot.accessDenied(message);
         c.execute(client, message, args, command);
