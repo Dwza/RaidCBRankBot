@@ -4,13 +4,13 @@ const {cb} = require(path.join(__dirname, '..', 'config', 'messages.json'));
 const deleteMessageDelay = process.env.DELETE_MESSAGE_DELAY;
 
 module.exports = {
-    name: 'cb',
-    aliases: [],
+    name: 'cb1',
+    aliases: ['cb2', 'cb3', 'cb4', 'cb5', 'cb6'],
     permissions: [],
     description: "Adds entry to Leaderboard",
     execute(client, message, args, command) {
 
-        bot.deleteLastMessage();
+        bot.deleteLastMessage(message);
 
         const options = {
             "delete": args.indexOf('-d') !== -1,
