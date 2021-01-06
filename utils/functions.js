@@ -2,14 +2,32 @@ const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
 const rankFileDir = process.env.RANK_FILE_DIR;
+const rankFilePath = path.join(__dirname, '..', 'resources','rank_files');
 const configFile = path.join(__dirname, '..', 'config', 'config.json');
 const messageFile = path.join(__dirname, '..', 'config', 'messages.json');
+const guildConfigPath = path.join(__dirname, '..', 'resources', 'guild_configs');
+const rankTemplate = path.join(__dirname, '..', 'resources', 'templates', 'template.json');
+const guildConfigTemplate = path.join(__dirname, '..', 'resources','templates', 'configs', 'template.json');
 const {positions, stages, record_embed} = require(configFile);
 
 module.exports = {
     configFilePath: configFile,
     msg: require(messageFile),
     config: require(configFile),
+    paths: {
+        guildConfigPath: guildConfigPath,
+        rankFilePath: rankFilePath,
+    },
+    templates: {
+        rankTemplate: rankTemplate,
+        guildConfigTemplate: guildConfigTemplate
+    },
+    utils: {
+        moment: moment,
+        path: path,
+        fs: fs
+    },
+
 
     getDate: () => {
         moment.locale('de');
